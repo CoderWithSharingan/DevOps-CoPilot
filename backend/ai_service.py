@@ -15,21 +15,29 @@ model = genai.GenerativeModel(
 def analyze_log(log_text):
 
     prompt = f"""
-    You are a Senior DevOps Engineer.
+You are a Senior DevOps Engineer.
 
-    Analyze the following log.
+Analyze the following log.
 
-    Provide:
+Return ONLY in this format:
 
-    1. Root Cause
-    2. Severity
-    3. Suggested Fix
-    4. Commands to Run
+Root Cause:
+<one concise sentence>
 
-    Log:
+Severity:
+Low | Medium | High | Critical
 
-    {log_text}
-    """
+Suggested Fix:
+<concise fix>
+
+Commands:
+<commands if applicable>
+
+Keep the entire response under 150 words.
+
+Log:
+{log_text}
+"""
 
     response = model.generate_content(prompt)
 
