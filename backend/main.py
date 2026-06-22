@@ -10,7 +10,9 @@ def home():
 async def upload_log(file: UploadFile = File(...)):
     contents = await file.read()
 
+    log_text = contents.decode("utf-8")
+
     return {
         "filename": file.filename,
-        "size": len(contents)
+        "content": log_text
     }
