@@ -13,7 +13,6 @@ model = genai.GenerativeModel(
 )
 
 def analyze_log(log_text):
-
     prompt = f"""
 You are a Senior DevOps Engineer.
 
@@ -38,7 +37,8 @@ Keep the entire response under 150 words.
 Log:
 {log_text}
 """
-
-    response = model.generate_content(prompt)
-
-    return response.text
+    try:
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        return f"AI Service Error: {str(e)}"
