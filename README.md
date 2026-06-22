@@ -1,47 +1,59 @@
 # DevOps Copilot
 
-DevOps Copilot is an AI-powered troubleshooting assistant that helps DevOps engineers analyze logs, identify root causes, assess severity, and generate remediation steps.
+AI-Powered DevOps Troubleshooting Assistant built with React, FastAPI, and Google Gemini.
+
+DevOps Copilot helps engineers analyze logs, identify root causes, assess incident severity, and generate remediation steps in seconds.
+
+---
 
 ## Features
 
 ### Current Features
 
-* Upload log files through a REST API
+* Upload DevOps log files
 * AI-powered log analysis using Google Gemini
 * Root cause identification
 * Severity assessment
 * Suggested remediation steps
 * Recommended troubleshooting commands
-* Interactive API documentation using Swagger UI
-
-### Planned Features
-
 * React frontend dashboard
-* Drag-and-drop log uploads
-* Jenkins log analysis
-* Docker log analysis
-* Kubernetes log analysis
-* AWS CloudWatch log analysis
-* Runbook generation
-* Multi-agent architecture
-* Docker containerization
-* Cloud deployment
+* FastAPI backend API
+* Real-time analysis results
+
+### Supported Logs
+
+* Docker Logs
+* Jenkins Logs
+* Linux System Logs
+* Kubernetes Logs (Planned)
+* AWS Logs (Planned)
+
+---
 
 ## Architecture
 
 ```text
-User
- ↓
+React Frontend
+       ↓
+Axios
+       ↓
 FastAPI Backend
- ↓
-AI Service Layer
- ↓
-Google Gemini
- ↓
-Analysis Response
+       ↓
+Gemini AI
+       ↓
+Structured Incident Analysis
 ```
 
+---
+
 ## Tech Stack
+
+### Frontend
+
+* React
+* Vite
+* Axios
+* CSS
 
 ### Backend
 
@@ -51,37 +63,39 @@ Analysis Response
 * Google Gemini API
 * Python Dotenv
 
-### Frontend (Planned)
-
-* React
-* Axios
-
-### Version Control
+### Development Tools
 
 * Git
 * GitHub
+* VS Code
 
-## Example Workflow
+---
+
+## Current Workflow
 
 ```text
-Upload Log
-     ↓
-Read Log Content
-     ↓
-AI Analysis
-     ↓
-Root Cause
-     ↓
-Suggested Fix
-     ↓
-Commands
+Upload Log File
+        ↓
+Read Log Contents
+        ↓
+Gemini Analysis
+        ↓
+Root Cause Detection
+        ↓
+Severity Assessment
+        ↓
+Suggested Fixes
+        ↓
+Troubleshooting Commands
 ```
 
-## Sample Output
+---
+
+## Example Output
 
 ```text
 Root Cause:
-Docker registry authentication failure
+Docker registry authentication failure.
 
 Severity:
 High
@@ -94,70 +108,135 @@ docker login
 docker pull <image>
 ```
 
+---
+
 ## Project Structure
 
 ```text
-devops-copilot/
+DevOps-CoPilot/
 │
 ├── backend/
 │   ├── main.py
 │   ├── ai_service.py
 │   ├── test_ai_service.py
-│   └── test_gemini_api.py
+│   ├── test_gemini.py
+│   └── .env
 │
 ├── frontend/
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   └── vite.config.js
 │
 ├── README.md
 └── .gitignore
 ```
 
-## Getting Started
+---
 
-### Create Virtual Environment
+## Setup
+
+### Clone Repository
 
 ```bash
+git clone <repository-url>
+cd DevOps-CoPilot
+```
+
+### Backend Setup
+
+```bash
+cd backend
+
 python -m venv venv
-```
 
-### Activate Virtual Environment
-
-```bash
 venv\Scripts\activate
+
+pip install fastapi uvicorn python-dotenv python-multipart google-generativeai
 ```
 
-### Install Dependencies
+Create a `.env` file:
 
-```bash
-pip install fastapi uvicorn python-dotenv google-generativeai python-multipart
+```env
+GEMINI_API_KEY=YOUR_API_KEY
 ```
 
-### Run Application
+Start FastAPI:
 
 ```bash
 uvicorn main:app --reload
 ```
 
-### Open Swagger UI
+---
+
+### Frontend Setup
+
+```bash
+cd frontend
+
+npm install
+
+npm run dev
+```
+
+Frontend:
+
+```text
+http://localhost:5173
+```
+
+Backend:
+
+```text
+http://127.0.0.1:8000
+```
+
+API Docs:
 
 ```text
 http://127.0.0.1:8000/docs
 ```
 
+---
+
 ## Roadmap
 
+### Phase 1 (Completed)
+
 * [x] FastAPI Backend
+* [x] Gemini Integration
 * [x] File Upload API
-* [x] File Content Processing
-* [x] Gemini AI Integration
-* [x] AI-Powered Log Analysis
-* [ ] Structured Response Formatting
-* [ ] React Frontend
-* [ ] Multi-Agent Workflow
-* [ ] Docker Support
-* [ ] Kubernetes Support
-* [ ] AWS Support
-* [ ] Cloud Deployment
+* [x] React Frontend
+* [x] End-to-End Analysis Workflow
 
-## Motivation
+### Phase 2 (In Progress)
 
-DevOps engineers spend significant time manually investigating logs and infrastructure failures. DevOps Copilot aims to reduce troubleshooting time by automatically identifying root causes and generating actionable remediation steps.
+* [ ] Professional Dashboard UI
+* [ ] Drag & Drop Upload
+* [ ] Loading Indicators
+* [ ] Analysis Cards
+* [ ] Severity Badges
+
+### Phase 3 (Planned)
+
+* [ ] Multi-Agent Architecture
+* [ ] Security Analysis Agent
+* [ ] Root Cause Agent
+* [ ] Fix Recommendation Agent
+* [ ] Runbook Generator
+
+### Phase 4 (Planned)
+
+* [ ] Jenkins Integration
+* [ ] Docker Integration
+* [ ] Kubernetes Integration
+* [ ] AWS CloudWatch Integration
+* [ ] Incident History Dashboard
+
+---
+
+## Vision
+
+DevOps engineers spend valuable time manually investigating logs and infrastructure failures. DevOps Copilot aims to reduce troubleshooting time by automatically identifying root causes, recommending fixes, and guiding incident resolution through an AI-powered workflow.
+
+The long-term goal is to evolve DevOps Copilot into a multi-agent incident response platform capable of analyzing infrastructure, CI/CD pipelines, cloud environments, and application logs in real time.
