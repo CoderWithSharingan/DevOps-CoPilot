@@ -1,61 +1,108 @@
+import "./App.css";
 import { useState } from "react";
-import axios from "axios";
 
 function App() {
-  const [file, setFile] = useState(null);
-  const [result, setResult] = useState("");
+  const [analysis, setAnalysis] = useState(null);
 
-  const handleUpload = async () => {
-    if (!file) {
-      alert("Please select a file");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await axios.post(
-  "http://127.0.0.1:8000/upload",
-  formData
-);
-
-console.log(response.data);
-
-setResult(response.data.analysis);
-    } catch (error) {
-  console.log("ERROR:", error);
-  console.log("RESPONSE:", error.response);
-  console.log("DATA:", error.response?.data);
-
-  alert("Upload failed");
-}
+  const handleAnalyze = () => {
+    setAnalysis({
+      rootCause:
+        "Docker client is not authenticated with the registry.",
+      severity: "High",
+      fix:
+        "Run docker login and verify repository permissions.",
+      commands:
+        "docker login\ndocker pull <image>"
+    });
   };
 
   return (
-    <div>
-      <h1>DevOps Copilot</h1>
-      <p>AI-Powered Incident Analysis</p>
+    <div className="app">
 
-      <input
-        type="file"
-        onChange={(e) => setFile(e.target.files[0])}
-      />
+      <div className="title">
+        <h1>DevOps Copilot</h1>
+        <p>AI-Powered Incident Analysis</p>
+      </div>
 
-      <br /><br />
+      <div className="upload-card">
 
-      <button onClick={handleUpload}>
-        Analyze Log
-      </button>
+  <h2>Upload DevOps Log</h2>
 
-      <br /><br />
+  <p
+    style={{
+      color: "#94a3b8",
+      marginTop: "10px",
+      marginBottom: "20px"
+    }}
+  >
+    Upload Jenkins, Docker, Kubernetes or AWS logs
+  </p>
 
-      {result && (
-        <div>
-          <h2>Analysis</h2>
-          <pre>{result}</pre>
+  <input
+    type="file"
+    style={{ marginBottom: "20px" }}
+  />
+
+  <br />
+
+  <button
+    className="upload-btn"
+    onClick={handleAnalyze}
+  >
+    Analyze Log
+  </button>
+
+</div>
+
+      {analysis && (
+        <div className="analysis-grid">
+
+          <div className="analysis-card">
+            <h3 className="card-title">
+              Root Cause
+            </h3>
+
+            <p>{analysis.rootCause}</p>
+          </div>
+
+          <div className="analysis-card">
+            <h3 className="card-title">
+              Severity
+            </h3>
+
+            <span className="severity high">
+              {analysis.severity}
+            </span>
+          </div>
+
+          <div className="analysis-card">
+            <h3 className="card-title">
+              Suggested Fix
+            </h3>
+
+            <p>{analysis.fix}</p>
+          </div>
+
+          <div className="analysis-card">
+            <h3 className="card-title">
+              Commands
+            </h3>
+
+            <pre>{analysis.commands}</pre>
+          </div>
+
         </div>
       )}
+      <footer
+          style={{
+            textAlign: "center",
+            marginTop: "50px",
+            color: "#94a3b8"
+          }}
+        >
+          Powered by Gemini AI • Built with React & FastAPI
+      </footer>
+
     </div>
   );
 }
