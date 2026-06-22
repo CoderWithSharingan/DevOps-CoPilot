@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File
+from ai_service import analyze_log
 
 app = FastAPI()
 
@@ -12,7 +13,9 @@ async def upload_log(file: UploadFile = File(...)):
 
     log_text = contents.decode("utf-8")
 
+    analysis = analyze_log(log_text)
+
     return {
         "filename": file.filename,
-        "content": log_text
+        "analysis": analysis
     }
