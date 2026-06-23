@@ -4,7 +4,6 @@ from ai_service import analyze_log
 
 app = FastAPI()
 
-# Allow React frontend to talk to FastAPI
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],

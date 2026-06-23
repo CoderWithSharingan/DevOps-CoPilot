@@ -1,29 +1,70 @@
 import "./App.css";
 import { useState } from "react";
+import axios from "axios";
 
 function App() {
-  const [analysis, setAnalysis] = useState(null);
-  const [fileName, setFileName] = useState("");
+   const [analysis, setAnalysis] = useState(null);
+   const [fileName, setFileName] = useState("");
+   const [file, setFile] = useState(null);
+   const [loading, setLoading] = useState(false);
+   const [error, setError] = useState("");
 
-  const handleFileChange = (e) => {
-  const file = e.target.files[0];
+   const handleFileChange = (e) => {
+   const selectedFile = e.target.files[0];
 
-  if (file) {
-    setFileName(file.name);
+  if (selectedFile) {
+    setFile(selectedFile);
+    setFileName(selectedFile.name);
   }
 };
+  
+  const parseAnalysis = (text) => {
+  return {
+    rootCause:
+      text.match(/Root Cause:\s*([\s\S]*?)Severity:/)?.[1]?.trim() || "",
 
-  const handleAnalyze = () => {
-    setAnalysis({
-      rootCause:
-        "Docker client is not authenticated with the registry.",
-      severity: "High",
-      fix:
-        "Run docker login and verify repository permissions.",
-      commands:
-        "docker login\ndocker pull <image>"
-    });
+    severity:
+      text.match(/Severity:\s*([\s\S]*?)Suggested Fix:/)?.[1]?.trim() || "",
+
+    fix:
+      text.match(/Suggested Fix:\s*([\s\S]*?)Commands:/)?.[1]?.trim() || "",
+
+    commands:
+      text.match(/Commands:\s*([\s\S]*)/)?.[1]?.trim() || ""
   };
+};
+
+  const handleAnalyze = async () => {
+  if (!file) {
+    alert("Please select a file");
+    return;
+  }
+
+  try {
+    setLoading(true);
+    setError("");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await axios.post(
+      "http://127.0.0.1:8000/upload",
+      formData
+    );
+    
+    const parsed = parseAnalysis(
+      response.data.analysis
+    );
+
+    setAnalysis(parsed);
+
+  } catch (err) {
+    setError("Failed to analyze log");
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="app">
@@ -77,11 +118,21 @@ function App() {
   <button
     className="upload-btn"
     onClick={handleAnalyze}
+    disabled={loading}
   >
-    Analyze Log
+    {loading ? "Analyzing..." : "Analyze Log"}
   </button>
 
 </div>
+      {error && (
+  <div className="analysis-card">
+    <h3 className="card-title">
+      Error
+    </h3>
+
+    <p>{error}</p>
+  </div>
+)}
 
       {analysis && (
         <div className="analysis-grid">
