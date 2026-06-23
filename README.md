@@ -176,3 +176,13 @@ http://localhost:5173
 - AI Chat Assistant for Incident Resolution
 
 ---
+
+## Screenshots
+
+### Jenkins Log Analysis
+
+![Jenkins Analysis](screenshots/jenkins-analysis.png)
+
+### Kubernetes Log Analysis
+
+![Kubernetes Analysis](screenshots/kubernetes-analysis.png)
