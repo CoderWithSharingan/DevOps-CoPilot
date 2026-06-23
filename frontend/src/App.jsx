@@ -99,8 +99,16 @@ function App() {
               Severity
             </h3>
 
-            <span className="severity high">
-              {analysis.severity}
+            <span
+              className={`severity ${
+                analysis.severity.toLowerCase().includes("high")
+                  ? "high"
+                  : analysis.severity.toLowerCase().includes("medium")
+                  ? "medium"
+                  : "low"
+                }`}
+                >
+               {analysis.severity}
             </span>
           </div>
 
@@ -117,7 +125,9 @@ function App() {
               Commands
             </h3>
 
-            <pre>{analysis.commands}</pre>
+            <div className="command-box">
+              <pre>{analysis.commands}</pre>
+            </div>
           </div>
 
         </div>
