@@ -3,6 +3,15 @@ import { useState } from "react";
 
 function App() {
   const [analysis, setAnalysis] = useState(null);
+  const [fileName, setFileName] = useState("");
+
+  const handleFileChange = (e) => {
+  const file = e.target.files[0];
+
+  if (file) {
+    setFileName(file.name);
+  }
+};
 
   const handleAnalyze = () => {
     setAnalysis({
@@ -38,10 +47,30 @@ function App() {
     Upload Jenkins, Docker, Kubernetes or AWS logs
   </p>
 
+  <div className="drop-zone">
+
+  <div className="drop-icon">
+    📄
+  </div>
+
+  <h3>Drag & Drop Log File</h3>
+
+  <p>
+    or click below to browse
+  </p>
+
   <input
     type="file"
-    style={{ marginBottom: "20px" }}
+    onChange={handleFileChange}
   />
+
+  {fileName && (
+    <p className="file-name">
+      Selected: {fileName}
+    </p>
+  )}
+
+</div>
 
   <br />
 

@@ -62,6 +62,7 @@ body {
   border-radius: 8px;
   cursor: pointer;
   transition: 0.3s;
+  width: 180px;
 }
 
 .upload-btn:hover {
@@ -97,4 +98,41 @@ body {
 
 .low {
   background: #16a34a;
+}
+.drop-zone {
+  border: 2px dashed #3b82f6;
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 20px;
+}
+
+.drop-icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.drop-zone h3 {
+  margin-bottom: 10px;
+}
+
+.drop-zone p {
+  color: #94a3b8;
+}
+
+.file-name {
+  margin-top: 15px;
+  color: #60a5fa;
+  font-weight: bold;
+}
+.drop-zone {
+  border: 2px dashed #3b82f6;
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 20px;
+  transition: 0.3s;
+}
+
+.drop-zone:hover {
+  background: rgba(59, 130, 246, 0.08);
+  transform: scale(1.01);
 }
