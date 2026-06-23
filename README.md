@@ -122,8 +122,8 @@ DevOps-CoPilot/
 │   └── vite.config.js
 │
 ├── screenshots/
-│   ├── jenkins-analysis.png
-│   └── kubernetes-analysis.png
+│   ├── Jenkins_Error_Solution.png
+│   └── Kubernetes_Error_Solution.png
 │
 └── README.md
 ```
