@@ -181,8 +181,8 @@ http://localhost:5173
 
 ### Jenkins Log Analysis
 
-![Jenkins Analysis](screenshots/jenkins-analysis.png)
+![Jenkins Analysis](ScreenShots/Jenkins_Error_Solution.png)
 
 ### Kubernetes Log Analysis
 
-![Kubernetes Analysis](screenshots/kubernetes-analysis.png)
+![Kubernetes Analysis](ScreenShots/Kubernetes_Error_Solution.png)
