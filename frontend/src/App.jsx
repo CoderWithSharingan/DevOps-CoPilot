@@ -81,7 +81,9 @@ function App() {
 
       <div className="upload-card">
 
-  <h2>Upload DevOps Log</h2>
+  <h2 className="upload-title">
+      Upload DevOps Log
+  </h2>
 
   <p
     style={{
