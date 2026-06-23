@@ -1,14 +1,11 @@
 import os
-import google.generativeai as genai
+from groq import Groq
 from dotenv import load_dotenv
 
 load_dotenv()
-genai.configure(
-    api_key=os.getenv("GEMINI_API_KEY")
-)
 
-model = genai.GenerativeModel(
-    "gemini-2.5-flash"
+client = Groq(
+    api_key=os.getenv("GROQ_API_KEY")
 )
 
 def analyze_log(log_text):
@@ -17,13 +14,37 @@ You are a Senior DevOps Engineer.
 
 Analyze the following DevOps log.
 
-First identify the log type:
+Identify the log type from:
 - Docker
 - Jenkins
 - Kubernetes
 - AWS
 - Linux/System
 - Unknown
+
+Severity Guidelines:
+
+Low = informational issue with no service impact
+
+Medium = degraded functionality but service remains available
+
+High = build failure, authentication failure, service disruption, container crash, pod failure
+
+Critical = production outage, data loss, security breach, complete service unavailability
+
+Commands Guidelines:
+
+- Provide only real and valid commands
+- Do not invent commands
+- List each command on a new line
+- Provide 3 to 5 commands maximum
+- Commands should help diagnose and fix the issue
+
+Suggested Fix Guidelines:
+
+- Provide 1 to 2 practical remediation steps
+- Explain what should be checked and why
+- Keep the explanation concise
 
 Return ONLY in this format:
 
@@ -37,19 +58,31 @@ Severity:
 Low | Medium | High | Critical
 
 Suggested Fix:
-Maximum 1 sentence. Under 20 words.
+<1-2 concise sentences>
 
 Commands:
-List all relevant commands required to diagnose and fix the issue.
-Use plain text commands only, no markdown or backticks.
+<one command per line>
 
 Keep the entire response under 150 words.
 
 Log:
 {log_text}
 """
+
     try:
-        response = model.generate_content(prompt)
-        return response.text
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            temperature=0,
+            max_tokens=300
+        )
+
+        return response.choices[0].message.content
+
     except Exception as e:
         return f"AI Service Error: {str(e)}"

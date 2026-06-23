@@ -54,7 +54,7 @@ function App() {
       "http://127.0.0.1:8000/upload",
       formData
     );
-    console.log(response)
+    console.log(response.data.analysis);
     
     const parsed = parseAnalysis(
       response.data.analysis
