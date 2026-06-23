@@ -15,9 +15,20 @@ def analyze_log(log_text):
     prompt = f"""
 You are a Senior DevOps Engineer.
 
-Analyze the following log.
+Analyze the following DevOps log.
+
+First identify the log type:
+- Docker
+- Jenkins
+- Kubernetes
+- AWS
+- Linux/System
+- Unknown
 
 Return ONLY in this format:
+
+Log Type:
+<detected type>
 
 Root Cause:
 <one concise sentence>
@@ -29,7 +40,8 @@ Suggested Fix:
 <concise fix>
 
 Commands:
-<commands if applicable>
+List all relevant commands required to diagnose and fix the issue.
+Use plain text commands only, no markdown or backticks.
 
 Keep the entire response under 150 words.
 

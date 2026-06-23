@@ -20,6 +20,9 @@ function App() {
   
   const parseAnalysis = (text) => {
   return {
+    logType:
+      text.match(/Log Type:\s*([\s\S]*?)Root Cause:/)?.[1]?.trim() || "",
+
     rootCause:
       text.match(/Root Cause:\s*([\s\S]*?)Severity:/)?.[1]?.trim() || "",
 
@@ -51,10 +54,12 @@ function App() {
       "http://127.0.0.1:8000/upload",
       formData
     );
+    console.log(response)
     
     const parsed = parseAnalysis(
       response.data.analysis
     );
+    console.log("parsed")
 
     setAnalysis(parsed);
 
@@ -125,7 +130,7 @@ function App() {
 
 </div>
       {error && (
-  <div className="analysis-card">
+  <div className="analysis-card severity-card">
     <h3 className="card-title">
       Error
     </h3>
@@ -136,6 +141,13 @@ function App() {
 
       {analysis && (
         <div className="analysis-grid">
+          <div className="analysis-card">
+            <h3 className="card-title">
+              Log Type
+            </h3>
+
+            <p>{analysis.logType}</p>
+          </div>
 
           <div className="analysis-card">
             <h3 className="card-title">
@@ -171,7 +183,7 @@ function App() {
             <p>{analysis.fix}</p>
           </div>
 
-          <div className="analysis-card">
+          <div className="analysis-card commands-card">
             <h3 className="card-title">
               Commands
             </h3>
