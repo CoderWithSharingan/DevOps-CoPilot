@@ -37,7 +37,7 @@ Severity:
 Low | Medium | High | Critical
 
 Suggested Fix:
-<concise fix>
+Maximum 1 sentence. Under 20 words.
 
 Commands:
 List all relevant commands required to diagnose and fix the issue.
