@@ -3,11 +3,13 @@ import { useState } from "react";
 import axios from "axios";
 
 function App() {
-   const [analysis, setAnalysis] = useState(null);
-   const [fileName, setFileName] = useState("");
-   const [file, setFile] = useState(null);
-   const [loading, setLoading] = useState(false);
-   const [error, setError] = useState("");
+  const [analysis, setAnalysis] = useState(null);
+  const [fileName, setFileName] = useState("");
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [loadingMessage, setLoadingMessage] = useState("");
+  const [error, setError] = useState("");
 
    const handleFileChange = (e) => {
    const selectedFile = e.target.files[0];
@@ -21,19 +23,31 @@ function App() {
   const parseAnalysis = (text) => {
   return {
     logType:
-      text.match(/Log Type:\s*([\s\S]*?)Root Cause:/)?.[1]?.trim() || "",
+      text.match(/Log Type:\s*([\s\S]*?)Root Cause:/i)?.[1]?.trim() || "",
 
     rootCause:
-      text.match(/Root Cause:\s*([\s\S]*?)Severity:/)?.[1]?.trim() || "",
+      text.match(/Root Cause:\s*([\s\S]*?)Severity:/i)?.[1]?.trim() || "",
 
     severity:
-      text.match(/Severity:\s*([\s\S]*?)Suggested Fix:/)?.[1]?.trim() || "",
+      text.match(/Severity:\s*(.*?)\s*Confidence:/is)?.[1]?.trim() || "",
+
+    confidence:
+      text.match(/Confidence:\s*(\d+)/i)?.[1]?.trim() || "",
+
+    evidence:
+      text.match(/Evidence:\s*([\s\S]*?)Suggested Fix:/i)?.[1]?.trim() || "",
 
     fix:
-      text.match(/Suggested Fix:\s*([\s\S]*?)Commands:/)?.[1]?.trim() || "",
+      text.match(/Suggested Fix:\s*([\s\S]*?)Prevention:/i)?.[1]?.trim() || "",
+
+    prevention:
+      text.match(/Prevention:\s*([\s\S]*?)Runbook:/i)?.[1]?.trim() || "",
+    
+    runbook:
+      text.match(/Runbook:\s*([\s\S]*?)Commands:/i)?.[1]?.trim() || "",
 
     commands:
-      text.match(/Commands:\s*([\s\S]*)/)?.[1]?.trim() || ""
+      text.match(/Commands:\s*([\s\S]*)$/i)?.[1]?.trim() || ""
   };
 };
 
@@ -45,22 +59,31 @@ function App() {
 
   try {
     setLoading(true);
+    setProgress(10);
+    setLoadingMessage("Uploading log...");
     setError("");
 
     const formData = new FormData();
     formData.append("file", file);
+    setProgress(30);
+    setLoadingMessage("Extracting log data...");
 
     const response = await axios.post(
       "http://127.0.0.1:8000/upload",
       formData
     );
+    setProgress(60);
+    setLoadingMessage("Analyzing root cause...");
     console.log(response.data.analysis);
     
     const parsed = parseAnalysis(
       response.data.analysis
     );
+    setProgress(80);
+    setLoadingMessage("Generating AI runbook...");
     console.log("parsed")
 
+    setProgress(100);
     setAnalysis(parsed);
 
   } catch (err) {
@@ -68,6 +91,7 @@ function App() {
     console.error(err);
   } finally {
     setLoading(false);
+    setLoadingMessage("");
   }
 };
 
@@ -75,7 +99,7 @@ function App() {
     <div className="app">
 
       <div className="title">
-        <h1>DevOps Copilot</h1>
+        <h1>DevOps Copilot AI</h1>
         <p>AI-Powered Incident Analysis</p>
       </div>
 
@@ -131,6 +155,26 @@ function App() {
   </button>
 
 </div>
+      {loading && (
+  <div className="loading-card">
+    <div className="loader"></div>
+
+    <h3>{loadingMessage}</h3>
+
+<div className="progress-container">
+  <div
+    className="progress-fill"
+    style={{ width: `${progress}%` }}
+  ></div>
+</div>
+
+<p>{progress}% Complete</p>
+
+    <p>
+      AI is analyzing your incident...
+    </p>
+  </div>
+)}
       {error && (
   <div className="analysis-card severity-card">
     <h3 className="card-title">
@@ -142,61 +186,152 @@ function App() {
 )}
 
       {analysis && (
-        <div className="analysis-grid">
-          <div className="analysis-card">
-            <h3 className="card-title">
-              Log Type
-            </h3>
+  <div>
+    <div
+      className={`incident-banner ${analysis.severity
+        .toLowerCase()
+        .trim()}`}
+    >
+      <div className="incident-header">
+        <span className="incident-severity">
+          {analysis.severity.toUpperCase()} INCIDENT
+        </span>
 
-            <p>{analysis.logType}</p>
-          </div>
+        <h2>{analysis.logType}</h2>
+      </div>
 
-          <div className="analysis-card">
-            <h3 className="card-title">
-              Root Cause
-            </h3>
+      <div className="detected-components">
+        <span>Detected Components</span>
 
-            <p>{analysis.rootCause}</p>
-          </div>
-
-          <div className="analysis-card">
-            <h3 className="card-title">
-              Severity
-            </h3>
-
-            <span
-              className={`severity ${
-                analysis.severity.toLowerCase().includes("high")
-                  ? "high"
-                  : analysis.severity.toLowerCase().includes("medium")
-                  ? "medium"
-                  : "low"
-                }`}
-                >
-               {analysis.severity}
-            </span>
-          </div>
-
-          <div className="analysis-card">
-            <h3 className="card-title">
-              Suggested Fix
-            </h3>
-
-            <p>{analysis.fix}</p>
-          </div>
-
-          <div className="analysis-card commands-card">
-            <h3 className="card-title">
-              Commands
-            </h3>
-
-            <div className="command-box">
-              <pre>{analysis.commands}</pre>
-            </div>
-          </div>
-
+        <div className="component-chip">
+          {analysis.logType}
         </div>
-      )}
+      </div>
+      <div className="confidence-section">
+  <span>Confidence</span>
+
+  <div
+    className={`confidence-chip ${
+      Number(analysis.confidence) >= 90
+        ? "confidence-high"
+        : Number(analysis.confidence) >= 75
+        ? "confidence-medium"
+        : "confidence-low"
+    }`}
+  >
+    {analysis.confidence}%
+  </div>
+</div>
+
+</div>
+
+    <div className="incident-report">
+
+      <div className="analysis-card">
+        <h3 className="card-title">
+          Root Cause
+        </h3>
+
+        <p>{analysis.rootCause}</p>
+      </div>
+
+      <div className="analysis-card">
+        <h3 className="card-title">
+          Evidence
+        </h3>
+
+        <div className="evidence-list">
+          {analysis.evidence
+            .split("\n")
+            .filter((line) => line.trim())
+            .map((line, index) => {
+              let type = "";
+
+              if (
+                line.toLowerCase().includes("error") ||
+                line.toLowerCase().includes("crash") ||
+                line.toLowerCase().includes("failed") ||
+                line.toLowerCase().includes("exit code") ||
+                line.toLowerCase().includes("exited") ||
+                line.toLowerCase().includes("exception")
+              ) {
+                type = "error";
+              } else if (
+                line.toLowerCase().includes("warning") ||
+                line.toLowerCase().includes("warn")
+              ) {
+                type = "warning";
+              }
+
+              return (
+                <div
+                  key={index}
+                  className={`evidence-item ${type}`}
+                >
+                  {line}
+                </div>
+              );
+            })}
+        </div>
+      </div>
+
+      <div className="analysis-card">
+        <h3 className="card-title">
+          Suggested Fix
+        </h3>
+
+        <p>{analysis.fix}</p>
+      </div>
+
+      <div className="analysis-card">
+        <h3 className="card-title">
+          Prevention
+        </h3>
+
+        <pre style={{ whiteSpace: "pre-wrap" }}>
+          {analysis.prevention}
+        </pre>
+      </div>
+
+      <div className="analysis-card">
+  <h3 className="card-title">
+    AI Runbook
+  </h3>
+
+  <div className="runbook-list">
+    {(analysis.runbook || "")
+      .split("Step")
+      .filter(Boolean)
+      .map((step, index) => (
+        <div
+          key={index}
+          className="runbook-step"
+        >
+          <span className="step-number">
+            {index + 1}
+          </span>
+
+          <pre style={{ whiteSpace: "pre-wrap", margin: 0 }}>
+            {step.trim().replace(/^\d+\s*:\s*/, "")}
+          </pre>
+        </div>
+      ))}
+  </div>
+</div>  
+
+      <div className="analysis-card commands-card">
+        <h3 className="card-title">
+          Commands
+        </h3>
+
+        <div className="command-box">
+          <pre>{analysis.commands}</pre>
+        </div>
+      </div>
+
+    </div>
+  </div>
+)}
       <footer
           style={{
             textAlign: "center",
@@ -204,7 +339,7 @@ function App() {
             color: "#94a3b8"
           }}
         >
-          Powered by Gemini AI • Built with React & FastAPI
+          Powered by Groq AI • Built with React & FastAPI
       </footer>
 
     </div>

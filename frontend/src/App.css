@@ -124,8 +124,9 @@ body {
 .analysis-card {
   background: #1e293b;
   border-radius: 12px;
-  padding: 25px;
+  padding: 22px;
   border: 1px solid rgba(255,255,255,0.05);
+  border-left: 4px solid #3b82f6;
   transition: all 0.3s ease;
   min-height: 180px;
 }
@@ -136,9 +137,12 @@ body {
 }
 
 .card-title {
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   color: #60a5fa;
-  margin-bottom: 20px;
-  text-align: center;
+  margin-bottom: 18px;
 }
 
 .analysis-card p {
@@ -168,6 +172,7 @@ body {
   color: #e2e8f0;
   white-space: pre-wrap;
   word-wrap: break-word;
+  line-height: 1.8;
 }
 
 /* SEVERITY */
@@ -228,4 +233,200 @@ footer {
   .upload-btn {
     width: 100%;
   }
+}
+.incident-banner {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid #334155;
+  background: #1e293b;
+  box-shadow:
+    0 0 25px rgba(59,130,246,0.15),
+    0 10px 25px rgba(0,0,0,0.25);
+}
+
+.incident-header h2 {
+  font-size: 42px;
+  font-weight: 800;
+  margin-top: 10px;
+  color: white;
+}
+
+.incident-severity {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.incident-banner.low .incident-severity {
+  background: #16a34a;
+  color: white;
+}
+
+.incident-banner.medium .incident-severity {
+  background: #f59e0b;
+  color: white;
+}
+
+.incident-banner.high .incident-severity {
+  background: #dc2626;
+  color: white;
+}
+
+.incident-banner.critical .incident-severity {
+  background: #991b1b;
+  color: white;
+}
+
+.detected-components {
+  margin-top: 20px;
+}
+
+.detected-components span {
+  color: #94a3b8;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.component-chip {
+  display: inline-block;
+  background: #2563eb;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+}
+.incident-report {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.incident-report .analysis-card {
+  width: 100%;
+  box-sizing: border-box;
+}
+.incident-report .analysis-card pre {
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+.evidence-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.evidence-item {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(59,130,246,0.08);
+  border-left: 3px solid #3b82f6;
+  font-family: monospace;
+}
+
+.evidence-item.error {
+  border-left: 4px solid #ef4444;
+}
+
+.evidence-item.warning {
+  border-left: 4px solid #f59e0b;
+}
+.confidence-section {
+  margin-top: 20px;
+}
+
+.confidence-section span {
+  display: block;
+  color: #94a3b8;
+  margin-bottom: 10px;
+}
+
+.confidence-chip {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #16a34a;
+  color: white;
+  font-weight: 600;
+}
+.confidence-high {
+  background: #16a34a;
+}
+
+.confidence-medium {
+  background: #f59e0b;
+}
+
+.confidence-low {
+  background: #ef4444;
+}
+.runbook-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.runbook-step {
+  display: flex;
+  gap: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  background: rgba(59,130,246,0.08);
+}
+
+.step-number {
+  min-width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+.loading-card {
+  margin-top: 30px;
+  padding: 40px;
+  text-align: center;
+  background: #1e293b;
+  border-radius: 16px;
+  border: 1px solid rgba(59,130,246,0.2);
+}
+
+.loader {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(59,130,246,0.2);
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+.progress-container {
+  width: 100%;
+  height: 10px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #3b82f6;
+  transition: width 0.5s ease;
 }
