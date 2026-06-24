@@ -1,6 +1,7 @@
 import "./App.css";
 import { useState } from "react";
 import axios from "axios";
+import jsPDF from "jspdf";
 
 function App() {
   const [analysis, setAnalysis] = useState(null);
@@ -95,6 +96,71 @@ function App() {
   }
 };
 
+const exportPDF = () => {
+  if (!analysis) return;
+
+  const doc = new jsPDF();
+
+  doc.setFontSize(20);
+  doc.text("DevOps Copilot Incident Report", 20, 20);
+
+  doc.setFontSize(12);
+
+  let y = 40;
+
+  const addSection = (title, content) => {
+    doc.setFont(undefined, "bold");
+    doc.text(title, 20, y);
+    y += 8;
+
+    doc.setFont(undefined, "normal");
+
+    const lines = doc.splitTextToSize(
+      content || "N/A",
+      170
+    );
+
+    doc.text(lines, 20, y);
+
+    y += lines.length * 7 + 10;
+  };
+
+  addSection("Log Type", analysis.logType);
+  addSection("Severity", analysis.severity);
+  addSection(
+    "Confidence",
+    `${analysis.confidence}%`
+  );
+  addSection(
+    "Root Cause",
+    analysis.rootCause
+  );
+  addSection(
+    "Evidence",
+    analysis.evidence
+  );
+  addSection(
+    "Suggested Fix",
+    analysis.fix
+  );
+  addSection(
+    "Prevention",
+    analysis.prevention
+  );
+  addSection(
+    "AI Runbook",
+    analysis.runbook
+  );
+  addSection(
+    "Commands",
+    analysis.commands
+  );
+
+  doc.save(
+    `${analysis.logType}-incident-report.pdf`
+  );
+};
+
   return (
     <div className="app">
 
@@ -184,6 +250,26 @@ function App() {
     <p>{error}</p>
   </div>
 )}
+    {!analysis && !loading && !error && (
+  <div className="empty-state">
+    <div className="empty-icon">🚨</div>
+
+    <h2>Analyze Your First Incident</h2>
+
+    <p>
+      Upload a DevOps log file to generate an AI-powered incident report.
+    </p>
+
+    <div className="empty-features">
+      <div>✓ Root Cause Analysis</div>
+      <div>✓ Severity Assessment</div>
+      <div>✓ Confidence Score</div>
+      <div>✓ Evidence Extraction</div>
+      <div>✓ AI Runbook Generation</div>
+      <div>✓ Recovery Commands</div>
+    </div>
+  </div>
+)}
 
       {analysis && (
   <div>
@@ -192,13 +278,22 @@ function App() {
         .toLowerCase()
         .trim()}`}
     >
-      <div className="incident-header">
-        <span className="incident-severity">
-          {analysis.severity.toUpperCase()} INCIDENT
-        </span>
+  <div className="banner-top">
 
-        <h2>{analysis.logType}</h2>
-      </div>
+    <div className="incident-header">
+      <span className="incident-severity">
+        {analysis.severity.toUpperCase()} INCIDENT
+      </span>
+
+      <h2>{analysis.logType}</h2>
+    </div>
+          <button
+          className="export-btn"
+          onClick={exportPDF}
+        >
+          📄 Export Report
+        </button>
+  </div>
 
       <div className="detected-components">
         <span>Detected Components</span>
