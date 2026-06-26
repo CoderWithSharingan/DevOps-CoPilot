@@ -13,6 +13,7 @@ function App() {
   const [loadingMessage, setLoadingMessage] = useState("");
   const [error, setError] = useState("");
   const [copiedCommand, setCopiedCommand] = useState("");
+  const [dragActive, setDragActive] = useState(false);
 
    const handleFileChange = (e) => {
    const selectedFile = e.target.files[0];
@@ -325,6 +326,31 @@ const copyCommand = async (command) => {
     console.error(err);
   }
 };
+  const handleDrag = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  if (e.type === "dragenter" || e.type === "dragover") {
+    setDragActive(true);
+  } else if (e.type === "dragleave") {
+    setDragActive(false);
+  }
+};
+
+const handleDrop = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  setDragActive(false);
+
+  const droppedFile = e.dataTransfer.files[0];
+
+  if (droppedFile) {
+    setFile(droppedFile);
+    setFileName(droppedFile.name);
+    toast.success("Log file uploaded successfully!");
+  }
+};
 
   return (
     <div className="app">
@@ -361,28 +387,51 @@ const copyCommand = async (command) => {
     Upload Jenkins, Docker, Kubernetes or AWS logs
   </p>
 
-  <div className="drop-zone">
+  <div
+  className={`drop-zone ${dragActive ? "drag-active" : ""}`}
+  onDragEnter={handleDrag}
+  onDragLeave={handleDrag}
+  onDragOver={handleDrag}
+  onDrop={handleDrop}
+>
 
   <div className="drop-icon">
-    📄
+  📤
   </div>
 
-  <h3>Drag & Drop Log File</h3>
+  <h3>Upload Your DevOps Logs</h3>
 
   <p>
-    or click below to browse
-  </p>
+  Drag & drop your log file here or browse your computer.
+</p>
+
+  <div className="supported-files">
+    <span>.log</span>
+    <span>.txt</span>
+    <span>.out</span>
+    <span>.yaml</span>
+  </div>
 
   <input
-    type="file"
-    onChange={handleFileChange}
-  />
+  id="file-upload"
+  type="file"
+  accept=".log,.txt,.out,.yaml,.yml"
+  onChange={handleFileChange}
+  hidden
+/>
+
+<label
+  htmlFor="file-upload"
+  className="browse-btn"
+>
+  Browse Files
+</label>
 
   {fileName && (
-    <p className="file-name">
-      Selected: {fileName}
-    </p>
-  )}
+  <div className="selected-file">
+    ✅ {fileName}
+  </div>
+)}
 
 </div>
 
