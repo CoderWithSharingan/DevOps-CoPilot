@@ -492,3 +492,64 @@ footer {
   justify-content: space-between;
   align-items: center;
 }
+.summary-card {
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.18),
+    rgba(59, 130, 246, 0.08)
+  );
+
+  border: 1px solid rgba(59, 130, 246, 0.35);
+}
+
+.summary-card p {
+  line-height: 1.8;
+  color: #dbeafe;
+  font-size: 15px;
+}
+.command-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: #111827;
+
+  border: 1px solid #374151;
+
+  border-radius: 10px;
+
+  padding: 14px 18px;
+
+  margin-bottom: 12px;
+}
+
+.command-item code {
+  color: #f8fafc;
+
+  font-family: Consolas, monospace;
+
+  font-size: 14px;
+}
+
+.copy-btn {
+  background: #2563eb;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 8px;
+
+  padding: 8px 14px;
+
+  cursor: pointer;
+
+  transition: .25s;
+}
+
+.copy-btn:hover {
+  background: #1d4ed8;
+}
+.copy-btn.copied {
+  background: #16a34a;
+}

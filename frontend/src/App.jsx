@@ -11,6 +11,7 @@ function App() {
   const [progress, setProgress] = useState(0);
   const [loadingMessage, setLoadingMessage] = useState("");
   const [error, setError] = useState("");
+  const [copiedCommand, setCopiedCommand] = useState("");
 
    const handleFileChange = (e) => {
    const selectedFile = e.target.files[0];
@@ -27,7 +28,10 @@ function App() {
       text.match(/Log Type:\s*([\s\S]*?)Root Cause:/i)?.[1]?.trim() || "",
 
     rootCause:
-      text.match(/Root Cause:\s*([\s\S]*?)Severity:/i)?.[1]?.trim() || "",
+      text.match(/Root Cause:\s*([\s\S]*?)Executive Summary:/i)?.[1]?.trim() || "",
+
+    summary:
+      text.match(/Executive Summary:\s*([\s\S]*?)Severity:/i)?.[1]?.trim() || "",
 
     severity:
       text.match(/Severity:\s*(.*?)\s*Confidence:/is)?.[1]?.trim() || "",
@@ -69,7 +73,7 @@ function App() {
     setProgress(30);
     setLoadingMessage("Extracting log data...");
 
-    await axios.post(
+    const response = await axios.post(
     `${import.meta.env.VITE_API_URL}/upload`,
       formData
       );
@@ -159,6 +163,20 @@ const exportPDF = () => {
   doc.save(
     `${analysis.logType}-incident-report.pdf`
   );
+};
+const copyCommand = async (command) => {
+  try {
+    await navigator.clipboard.writeText(command);
+
+    setCopiedCommand(command);
+
+    setTimeout(() => {
+      setCopiedCommand("");
+    }, 2000);
+
+  } catch (err) {
+    console.error(err);
+  }
 };
 
   return (
@@ -321,6 +339,13 @@ const exportPDF = () => {
 </div>
 
     <div className="incident-report">
+      <div className="analysis-card summary-card">
+        <h3 className="card-title">
+          📋 Executive Summary
+        </h3>
+
+        <p>{analysis.summary}</p>
+      </div>
 
       <div className="analysis-card">
         <h3 className="card-title">
@@ -415,14 +440,31 @@ const exportPDF = () => {
 </div>  
 
       <div className="analysis-card commands-card">
-        <h3 className="card-title">
-          Commands
-        </h3>
+  <h3 className="card-title">
+    Commands
+  </h3>
 
-        <div className="command-box">
-          <pre>{analysis.commands}</pre>
-        </div>
+  {(analysis.commands || "")
+    .split("\n")
+    .filter(cmd => cmd.trim())
+    .map((cmd, index) => (
+      <div
+        key={index}
+        className="command-item"
+      >
+        <code>{cmd}</code>
+
+        <button
+        className={`copy-btn ${
+          copiedCommand === cmd ? "copied" : ""
+        }`}
+        onClick={() => copyCommand(cmd)}
+      >
+        {copiedCommand === cmd ? "✓ Copied" : "📋 Copy"}
+      </button>
       </div>
+    ))}
+</div>
 
     </div>
   </div>

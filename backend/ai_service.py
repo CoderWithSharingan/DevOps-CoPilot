@@ -46,6 +46,15 @@ Examples:
 60-79 = moderate evidence with uncertainty
 50-59 = weak evidence or ambiguous logs
 
+Executive Summary Guidelines:
+
+- Write exactly 2 concise sentences.
+- Start with "The uploaded <technology> log..."
+- Explain the issue in simple language.
+- Mention the business or service impact.
+- Do not repeat the Root Cause verbatim.
+- Maximum 40 words.
+
 Evidence Guidelines:
 
 - Extract only the MOST important log lines
@@ -98,6 +107,9 @@ Log Type:
 
 Root Cause:
 <one concise sentence>
+
+Executive Summary:
+<2-3 concise sentences>
 
 Severity:
 Low | Medium | High | Critical
