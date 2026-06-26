@@ -2,6 +2,7 @@ import "./App.css";
 import { useState } from "react";
 import axios from "axios";
 import jsPDF from "jspdf";
+import { Toaster, toast } from "react-hot-toast";
 
 function App() {
   const [analysis, setAnalysis] = useState(null);
@@ -58,7 +59,7 @@ function App() {
 
   const handleAnalyze = async () => {
   if (!file) {
-    alert("Please select a file");
+    toast.error("Please select a log file.");
     return;
   }
 
@@ -90,9 +91,11 @@ function App() {
 
     setProgress(100);
     setAnalysis(parsed);
+    toast.success("Incident analysis completed successfully!");
 
   } catch (err) {
     setError("Failed to analyze log");
+    toast.error("Analysis failed.");
     console.error(err);
   } finally {
     setLoading(false);
@@ -105,59 +108,200 @@ const exportPDF = () => {
 
   const doc = new jsPDF();
 
-  doc.setFontSize(20);
-  doc.text("DevOps Copilot Incident Report", 20, 20);
+  const now = new Date();
 
-  doc.setFontSize(12);
+const incidentId =
+  "INC-" +
+  now.getFullYear() +
+  String(now.getMonth() + 1).padStart(2, "0") +
+  String(now.getDate()).padStart(2, "0") +
+  "-" +
+  Math.floor(1000 + Math.random() * 9000);
 
-  let y = 40;
+const generatedOn = now.toLocaleString();
 
-  const addSection = (title, content) => {
-    doc.setFont(undefined, "bold");
-    doc.text(title, 20, y);
-    y += 8;
+let y = 20;
 
-    doc.setFont(undefined, "normal");
+// ===== Header =====
 
-    const lines = doc.splitTextToSize(
+doc.setFillColor(15, 23, 42);
+doc.rect(0, 0, 210, 30, "F");
+
+doc.setTextColor(255, 255, 255);
+doc.setFont("helvetica", "bold");
+doc.setFontSize(22);
+
+doc.text("DevOps Copilot AI", 105, 14, {
+  align: "center",
+});
+
+doc.setFontSize(12);
+
+doc.text("Incident Analysis Report", 105, 22, {
+  align: "center",
+});
+
+y = 40;
+
+// Reset text color
+
+doc.setTextColor(0, 0, 0);
+
+doc.setFontSize(11);
+
+doc.setFont("helvetica", "bold");
+doc.text("Incident ID:", 20, y);
+
+doc.setFont("helvetica", "normal");
+doc.text(incidentId, 60, y);
+
+y += 8;
+
+doc.setFont("helvetica", "bold");
+doc.text("Generated On:", 20, y);
+
+doc.setFont("helvetica", "normal");
+doc.text(generatedOn, 60, y);
+
+y += 8;
+
+doc.setFont("helvetica", "bold");
+doc.text("Technology:", 20, y);
+
+doc.setFont("helvetica", "normal");
+doc.text(analysis.logType, 60, y);
+
+y += 8;
+
+doc.setFont("helvetica", "bold");
+doc.text("Confidence:", 20, y);
+
+doc.setFont("helvetica", "normal");
+doc.text(`${analysis.confidence}%`, 60, y);
+
+y += 10;
+
+doc.setFont("helvetica", "bold");
+doc.text("Severity:", 20, y);
+
+let badgeColor = [34, 197, 94];
+
+if (analysis.severity === "Medium")
+  badgeColor = [249, 115, 22];
+
+if (
+  analysis.severity === "High" ||
+  analysis.severity === "Critical"
+)
+  badgeColor = [220, 38, 38];
+
+  doc.setFillColor(...badgeColor);
+
+doc.roundedRect(60, y - 6, 32, 8, 2, 2, "F");
+
+doc.setTextColor(255, 255, 255);
+
+doc.setFont("helvetica", "bold");
+
+doc.text(
+  analysis.severity.toUpperCase(),
+  76,
+  y,
+  {
+    align: "center",
+  }
+);
+
+doc.setTextColor(0, 0, 0);
+
+y += 15;
+
+doc.setDrawColor(220);
+
+doc.line(20, y, 190, y);
+
+y += 10;
+
+  const addSection = (title, content, isList = false) => {
+  // Add new page if needed
+  if (y > 250) {
+    doc.addPage();
+    y = 20;
+  }
+
+  // Section divider
+  doc.setDrawColor(210);
+  doc.line(20, y, 190, y);
+
+  y += 8;
+
+  // Section title
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(13);
+  doc.text(title.toUpperCase(), 20, y);
+
+  y += 8;
+
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(11);
+
+  if (isList) {
+    content
+      .split("\n")
+      .filter(line => line.trim())
+      .forEach(line => {
+        if (y > 275) {
+          doc.addPage();
+          y = 20;
+        }
+
+        const wrapped = doc.splitTextToSize(
+          "• " + line.replace(/^- /, ""),
+          165
+        );
+
+        doc.text(wrapped, 25, y);
+
+        y += wrapped.length * 6 + 2;
+      });
+  } else {
+    const wrapped = doc.splitTextToSize(
       content || "N/A",
       170
     );
 
-    doc.text(lines, 20, y);
+    doc.text(wrapped, 20, y);
 
-    y += lines.length * 7 + 10;
-  };
-
-  addSection("Log Type", analysis.logType);
-  addSection("Severity", analysis.severity);
+    y += wrapped.length * 6 + 8;
+  }
+};
   addSection(
-    "Confidence",
-    `${analysis.confidence}%`
-  );
+  "Executive Summary",
+  analysis.summary
+);
   addSection(
     "Root Cause",
-    analysis.rootCause
+    analysis.rootCause,true
   );
   addSection(
     "Evidence",
-    analysis.evidence
+    analysis.evidence,true
   );
   addSection(
     "Suggested Fix",
-    analysis.fix
+    analysis.fix,true
   );
   addSection(
     "Prevention",
-    analysis.prevention
+    analysis.prevention,true
   );
   addSection(
     "AI Runbook",
-    analysis.runbook
+    analysis.runbook,true
   );
   addSection(
     "Commands",
-    analysis.commands
+    analysis.commands,true
   );
 
   doc.save(
@@ -170,17 +314,31 @@ const copyCommand = async (command) => {
 
     setCopiedCommand(command);
 
+    toast.success("Command copied!");
+
     setTimeout(() => {
       setCopiedCommand("");
     }, 2000);
 
   } catch (err) {
+    toast.error("Failed to copy command.");
     console.error(err);
   }
 };
 
   return (
     <div className="app">
+    <Toaster
+  position="top-right"
+  toastOptions={{
+    duration: 2500,
+    style: {
+      background: "#1e293b",
+      color: "#fff",
+      border: "1px solid #334155",
+    },
+  }}
+/>
 
       <div className="title">
         <h1>DevOps Copilot AI</h1>
