@@ -69,10 +69,10 @@ function App() {
     setProgress(30);
     setLoadingMessage("Extracting log data...");
 
-    const response = await axios.post(
-      "http://127.0.0.1:8000/upload",
+    await axios.post(
+    `${import.meta.env.VITE_API_URL}/upload`,
       formData
-    );
+      );
     setProgress(60);
     setLoadingMessage("Analyzing root cause...");
     console.log(response.data.analysis);

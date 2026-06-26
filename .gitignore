@@ -1,16 +1,38 @@
-# Environment variables
+# ===========================
+# Environment Variables
+# ===========================
 .env
+backend/.env
 
-# Python virtual environment
+# ===========================
+# Python Virtual Environment
+# ===========================
 venv/
+.venv/
 backend/venv/
+backend/.venv/
 
-# Python cache
+# ===========================
+# Python Cache
+# ===========================
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
+# ===========================
+# Node
+# ===========================
+node_modules/
+frontend/node_modules/
+
+# ===========================
 # VS Code
+# ===========================
 .vscode/
 
-# Node modules
-node_modules/
+# ===========================
+# OS Files
+# ===========================
+.DS_Store
+Thumbs.db

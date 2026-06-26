@@ -85,3 +85,24 @@ An AI-powered DevOps Incident Analysis platform that helps engineers quickly ide
 frontend/
 backend/
 README.md
+
+## Docker Support
+
+### Backend
+
+- Python 3.12
+- FastAPI
+- Groq API
+- Uvicorn
+
+### Frontend
+
+- React
+- Vite
+- Axios
+
+### Run using Docker
+
+```bash
+docker compose up --build
+```
